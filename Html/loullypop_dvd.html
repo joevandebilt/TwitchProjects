@@ -1,0 +1,194 @@
+<html>
+	<head>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+		<style>
+			body {
+				width: 100%;
+				height: 100%;
+				min-width: 100%;
+				min-height: 100%;
+				background-color: #000;
+				color: #fff;
+				overflow: hidden; /* Hide scrollbars */
+
+				background-image: url('./Dynamic Action Sports Youtube Channel Art.png');
+			}
+			
+			.inner {
+				vertical-align: middle;
+				display: table-cell;
+			}
+			
+			.innerSub {
+				font-size: 0.5em;
+				display: none;
+			}
+			
+			.dvdLogo {
+				width: auto;
+				height: auto;
+				min-width: 400px;
+				min-height: 150px;
+				padding-left: 12px;
+				padding-right: 12px;
+				
+				border: 5px solid white;
+				text-align: center;
+				vertical-align: middle;
+				position: absolute;
+				display: table;
+				font-family: 'Roboto', sans-serif;
+				font-size: 5em;
+				background-color: rgba(135,135,135,0.3);
+			}
+
+			.partyTime {
+				background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+				border-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red) 5 5 100%;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				
+				box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
+				transform: scale(1);
+				animation: pulse 2s infinite;
+			}			
+			
+			.hidden {
+				display: none;
+			}
+			
+			.tenor-gif-embed {
+				max-width: 250px;
+				position: relative;
+			}
+			
+			@keyframes pulse {
+				0% {
+					transform: scale(0.95);
+					box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+				}
+
+				70% {
+					transform: scale(1);
+					box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+				}
+
+				100% {
+					transform: scale(0.95);
+					box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+				}
+			}
+			
+		</style>
+	</head>
+<body>
+
+<!-- <button onclick="partyTime(document.getElementById('playerName'))">party</button> -->
+
+<div id="playerName" class="dvdLogo">
+	<div class="inner">ToonSimmer
+		<div id="brb" class="innerSub">We'll be right back</div>
+		<div id="StartingSoon" class="innerSub">Starting Soon</div>
+	</div>
+</div>
+
+<div class="tenor-gif-embed hidden" data-postid="7564487" data-share-method="host" data-width="100%" data-aspect-ratio="1.2802056555269923"></div><script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<div class="tenor-gif-embed hidden" data-postid="8494539" data-share-method="host" data-width="100%" data-aspect-ratio="1.2802056555269923"></div><script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<div class="tenor-gif-embed hidden" data-postid="3581895" data-share-method="host" data-width="100%" data-aspect-ratio="1.2802056555269923"></div><script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<div class="tenor-gif-embed hidden" data-postid="12579422" data-share-method="host" data-width="100%" data-aspect-ratio="1.2802056555269923"></div><script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<div class="tenor-gif-embed hidden" data-postid="7564515" data-share-method="host" data-width="100%" data-aspect-ratio="1.2802056555269923"></div><script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+
+<script type="text/javascript">
+	var maxX = 0; 
+	var maxY = 0;
+
+	var pixelDelta = 1;
+	var partyTime = false;
+
+	window.onload = function() {
+
+		maxX = document.body.offsetWidth;
+		maxY = document.body.offsetHeight;
+		
+		var playerName = document.getElementById("playerName");
+		startMoving(playerName);
+
+		//console.log(maxX + " x " + maxY);
+	}
+
+	function startMoving(div) {
+		div.style.left = Math.round((Math.random() * (maxX - div.offsetWidth)));
+		div.style.top = Math.round((Math.random() * (maxY - div.offsetHeight)));
+		
+		//console.log(div.offsetWidth + " x " + playerName.offsetHeight);
+		
+		setInterval(function() {
+			MoveDiv(div, maxX, maxY);
+		}, 1);
+	}
+
+	function MoveDiv(div, maxX, maxY) {
+
+		var xModifier = 1;
+		var yModifier = 1;	
+		if (div.dataset.xModifier === undefined) { div.dataset.xModifier = xModifier; } else { xModifier = div.dataset.xModifier; }
+		if (div.dataset.yModifier === undefined) { div.dataset.yModifier = yModifier; } else { yModifier = div.dataset.yModifier; }
+
+		var currentX = parseInt(div.style.left.replace("px","")); 
+		var currentY = parseInt(div.style.top.replace("px",""));
+
+		currentX = currentX + (xModifier * pixelDelta);
+		currentY = currentY + (yModifier * pixelDelta);
+
+		div.style.left = currentX;
+		div.style.top = currentY;
+
+		var xCood = currentX + div.offsetWidth;
+		var yCood = currentY + div.offsetHeight;
+
+		if (!partyTime && InCorner(xCood, yCood, maxX, maxY))
+		{
+			partyTime(div);
+			partyTime = true;
+		}
+
+		if (xCood > maxX || currentX < 0) {
+			div.dataset.xModifier = xModifier * -1;
+		}
+
+		if (yCood > maxY || currentY < 0) {
+			div.dataset.yModifier = yModifier * -1;
+		}
+	}
+
+	function partyTime(div) {
+		//DO SOMETHING COOL?
+		pixelDelta = pixelDelta*2;
+		div.classList.add("partyTime");
+		var gifs = document.getElementsByClassName("tenor-gif-embed");
+		for (i = 0; i < gifs.length; i++) {
+			gifs[i].classList.remove("hidden");	 
+			startMoving(gifs[i]); 
+		}			
+	}
+
+	function InCorner(xCood, yCood, maxX, maxY){
+
+		//Top Left
+		var tolerance = 5;
+		
+		if ( within(xCood, 0, tolerance) && within(yCood, 0, tolerance)) { return true; } 
+		if ( within(xCood, 0, tolerance) && within(yCood, maxY, tolerance)) { return true; } 
+		if ( within(xCood, maxX, tolerance) && within(yCood, 0, tolerance)) { return true; } 
+		if ( within(xCood, maxX, tolerance) && within(yCood, maxY, tolerance)) { return true; } 
+		return false;
+
+	}
+
+	function within (value, target, tolerance) {
+		return (value >= (target - tolerance) && value <= (target + tolerance)); 
+	}
+
+</script>
+</body>
+</html>

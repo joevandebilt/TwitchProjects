@@ -1,0 +1,113 @@
+body {
+    vertical-align: middle;
+    align-items:center;
+    text-align: center;
+
+    overflow: hidden;
+
+    background-image: url('./Avatar_Sig.png');
+    background-size: contain; 
+    background-repeat: no-repeat;
+    background-position: center;
+    /* background-color: #000;
+    background-size: cover; */
+
+    color: #000;
+    font-family: 'Poppins', sans-serif;
+}
+
+.playerContainer {
+    position: absolute;
+    display: block;
+
+    height: 100%;
+    width: calc(100% - 60px);
+
+    margin: 50px 30px 120px 30px;
+    top: 620px;
+    left: 0px;
+    right: 0px;
+}
+
+.CurrentlyPlaying {
+    font-size: 1.2em;
+    display: inline-block;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+#videoTitle {
+    font-size: 1.3em;
+    display: inline-block;
+}
+
+#videoOwner {
+    font-size: 1.3em;
+    display: inline-block;
+}
+
+#ConsoleLog {
+    width: 30%;
+    height: 100%;
+    float: left;
+    position: absolute;
+    border: 2px black solid;
+    background-color: rgba(200,200,200, 200);
+    z-index: 100;
+    top: 0;
+    left: 0;
+}
+
+.triviaContainer {
+    position: absolute;
+    display: block;
+
+    height: 100%;
+    width: calc(100% - 60px);
+
+    padding: 50px 30px 120px 30px;        
+    top: 50px;
+    left: 0;
+    right: 0;
+}
+
+.triviaHeader {
+    font-size: 1.6em;
+}
+.triviaSubHeader {
+    font-size: 1.2em;
+}
+
+.triviaQuestion {
+    font-size: 1.8em;
+}
+
+.triviaAnswer {
+    flex-shrink: 1;
+    margin: 0 20px 0 20px;
+}
+
+.triviaAnswers{
+    list-style: none;
+    white-space:nowrap;
+    font-size: 1.4em;
+    padding: 0;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.triviaIncorrect {
+    color: red;
+}
+
+.triviaCorrect {
+    color: green;
+}
+
+.triviaAnswers li {
+    display: inline;
+    margin-left: 12px;
+    margin-right: 12px;
+} 

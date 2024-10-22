@@ -1,0 +1,406 @@
+<script>
+
+    var Debugging = false;
+
+    var enableTrivia = true;
+    var enablePlayer = true;
+
+    var playlists = [
+        //You can add a whole playlist here
+		"https://www.youtube.com/playlist?list=PLW_omwEM1aiem13x9zZVQ4IQEqAEVKA7S",	//ROYALTY FREE PLAYLIST
+        "https://www.youtube.com/playlist?list=PLzCxunOM5WFLNCSF0UEHZqFJJlmdeL71S", //Soundcloud
+        "https://www.youtube.com/playlist?list=PLpBHp10gVHH1vNdFsh6qDIOB7oIz7zj69",	//DANKMUS VIDEOS
+        "https://www.youtube.com/playlist?list=PLwJjxqYuirCLkq42mGw4XKGQlpZSfxsYd"  //8-Bit Games
+    ];
+
+    var videos = [
+        //You can put individual video links in here!
+        "https://www.youtube.com/watch?v=6jIJKQCDeVc&ab_channel=mastertegm"
+    ];
+</script>
+
+
+<!-- YO! Don't mess with the code below unless you know what you're doing -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;500&display=swap" rel="stylesheet">
+<style>
+    body {
+        vertical-align: middle;
+        align-items:center;
+        text-align: center;
+
+        overflow: hidden;
+
+        /* background: url('./Avatar_Sig.png') no-repeat center center fixed; */
+		background-color: white;
+        background-size: cover;
+
+        color: #000;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .playerContainer {
+        position: absolute;
+        display: block;
+
+        height: 100%;
+        width: 100%;
+
+        margin: 50px 30px 120px 30px;
+        top: 620px;
+    }
+
+    .CurrentlyPlaying {
+        font-size: 1.2em;
+        display: inline-block;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    #videoTitle {
+        font-size: 1.3em;
+        display: inline-block;
+    }
+
+    #videoOwner {
+        font-size: 1.3em;
+        display: inline-block;
+    }
+
+    #ConsoleLog {
+        width: 30%;
+        height: 100%;
+        float: left;
+        position: absolute;
+        border: 2px black solid;
+        background-color: rgba(200,200,200, 200);
+        z-index: 100;
+        top: 0;
+        left: 0;
+    }
+
+    .triviaContainer {
+        position: absolute;
+        display: block;
+
+        height: 100%;
+        width: 100%;
+
+        margin: 50px 30px 120px 30px;        
+        top: 50px;
+    }
+
+    .triviaHeader {
+        font-size: 1.6em;
+    }
+
+    .triviaQuestion {
+        font-size: 1.8em;
+    }
+
+    .triviaAnswers{
+        list-style: none;
+        white-space:nowrap;
+        font-size: 1.4em;
+    }
+
+    .triviaIncorrect {
+        color: red;
+    }
+
+    .triviaCorrect {
+        color: green;
+    }
+
+    .triviaAnswers li {
+        display: inline;
+        margin-left: 12px;
+        margin-right: 12px;
+    } 
+
+</style>
+<div id="ConsoleLog" style="display: none;"></div>
+
+<div class="triviaContainer">
+    <div class="triviaHeader">Trivia while you wait...</div>
+    <p class="triviaQuestion">This is a Question</p>
+    <ul class="triviaAnswers">
+        <li>Answer 1</li>
+        <li>Answer 2</li>
+        <li>Answer 3</li>
+        <li>Answer 4</li>
+    </ul>
+    <p class="triviaTimer">Answer in <span>000</span> seconds</p>
+</div>
+
+<div class="playerContainer">
+    <p class="CurrentlyPlaying">Currently Playing</p><br />
+    <div id="videoTitle"></div><div class="CurrentlyPlaying">By</div><div id="videoOwner"></div>
+</div>
+
+<div id="player" style="display: none;"></div>
+<script src="http://www.youtube.com/player_api"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script id="TriviaQuestionLogic">
+
+    var questionTimeLimit = 30;
+    var intervalTimeLimit = 15;
+
+    $(document).ready(function() {
+        if (enableTrivia) {
+            setTimer(questionTimeLimit);
+            GetQuestion();
+        }
+    });
+
+    function GetQuestion() {
+        setTimerText("Answer in ", questionTimeLimit);
+        $.ajax({
+            url: "https://opentdb.com/api.php?amount=1&category=15",
+            method: "GET",
+            success: RenderQuestion
+        });
+    }
+
+    function RenderQuestion(response) {
+        log(response);
+        if (response && response.response_code === 0) {
+            var questionObject = response.results[0];
+
+            var $questionContainer =  $(".triviaQuestion");
+            var $answersContainer = $(".triviaAnswers");
+
+            $questionContainer.empty();
+            $answersContainer.empty();
+
+            $questionContainer.html(questionObject.question);
+            if (questionObject.type === "multiple") {
+                
+                var questionCount = questionObject.incorrect_answers.length + 1;
+                log("There are "+ questionCount + " questions");
+
+                var correctAnswerSlot = Math.floor(Math.random() * questionCount);
+                log("Inserting correct answer into slot "+ correctAnswerSlot);
+
+                for (var i = 0; i<questionCount; i++) {
+                    if (i === correctAnswerSlot) {
+                        $answersContainer.append("<li class='triviaAnswer"+i+"'>"+questionObject.correct_answer+"</li>");
+                    } else { 
+                        $answersContainer.append("<li class='triviaAnswer"+i+"'>"+questionObject.incorrect_answers.pop()+"</li>");
+                    }
+                }
+
+                log("Correct answer is in slot "+correctAnswerSlot);
+                revealAnswer(correctAnswerSlot);
+
+            } else if (questionObject.type === "boolean") {
+                $answersContainer.append("<li class='triviaAnswer1'>True</li>");
+                $answersContainer.append("<li class='triviaAnswer0'>False</li>");
+
+                if (questionObject.correct_answer === "True") {
+                    log("Correct answer is True");
+                    revealAnswer(1);
+                } else {
+                    log("Correct answer is False");
+                    revealAnswer(0);
+                }
+            }
+            else {
+                log("fuck knows what to do now");
+            }
+        }
+    }
+
+    function revealAnswer(index) {
+        $correctAnswerContainer = $(".triviaAnswer"+index);
+        
+        var questionCountdown = startCountdown();
+
+        setTimeout(function() {
+            clearInterval(questionCountdown);
+
+            var $answersContainer = $(".triviaAnswers");
+            $answersContainer.children().addClass("triviaIncorrect");
+            $correctAnswerContainer.removeClass("triviaIncorrect").addClass("triviaCorrect");
+
+            //Start the countdown to the next question
+            setTimerText("Next question in ", intervalTimeLimit);
+            var intervalCountdown = startCountdown(0);
+            setTimeout(function() {                
+                clearInterval(intervalCountdown);
+                GetQuestion();
+            }, intervalTimeLimit*1000);
+
+        }, questionTimeLimit*1000); 
+    }
+    
+    function setTimerText(text, time) {
+        var $timer = $(".triviaTimer");
+        var $counter = $(".triviaTimer > span");
+
+        $timer.html(text+" <span>"+time+"</span> seconds");
+    }
+
+    function startCountdown() {
+        return setInterval(function() {
+            setTimer(getTimer()-1);    
+        }, 1000);
+    }
+
+    function setTimer(time) {
+        var $counter = $(".triviaTimer > span");
+        $counter.html(time);
+    }
+
+    function getTimer() {
+        var $counter = $(".triviaTimer > span");
+        return parseInt($counter.html());
+    }
+
+</script>
+
+<script id="YouTubePlayerLogic">
+    var player;
+    function GetRandomVideo () {
+        var index = Math.round(Math.random() * (videos.length - 1));
+        var entry = videos[index];
+        if (entry.length === 11) {
+            return entry;
+        } else {
+            entry = getParameterByName("v", entry);
+        }
+        return entry;
+    }
+    
+    function onYouTubePlayerAPIReady(videoId) {
+        if (enablePlayer) {
+            player = new YT.Player('player', {
+                width: '1920',
+                height: '1080',
+                events: {
+                    onReady: onPlayerReady,
+                    onStateChange: onPlayerStateChange
+                },
+                playerVars: {
+                    "autoplay": true,
+                    "shuffle": true,
+                    "fullscreen": true,
+                    "rel": false
+                }
+            });
+        }
+    }
+
+    // autoplay video
+    function onPlayerReady(event) {
+
+        log("onPlayerReady");
+        log(event);
+
+        if (playlists.length === 0) {
+            player.loadVideoById(GetRandomVideo());
+            event.target.playVideo();
+        } else {
+            CueNextPlaylist(event);
+        }
+    }
+
+    function playingVideo(event){
+        log("Playing Video")
+        log(event.target.getVideoData());
+
+        var videoData = event.target.getVideoData();
+        
+        document.getElementById("videoTitle").innerHTML = videoData.title;
+        document.getElementById("videoOwner").innerHTML = videoData.author;
+    }
+
+    // when video ends
+    function onPlayerStateChange(event) {        
+        log("Player State has changed: Status " + event.data);
+        log(event);
+
+        /*
+            -1 – unstarted
+            0 – ended
+            1 – playing
+            2 – paused
+            3 – buffering
+            5 – video cued
+        */
+
+        if(event.data === 0) {         
+            log("Video has ended, playing next one"); 
+            player.loadVideoById(GetRandomVideo());
+        }
+        else if (event.data === 1) {
+            log("Video started playing");
+            playingVideo(event);
+        }
+        else if (event.data === 3){
+            log("Buffering Event");
+        }
+        else if (event.data === 5) {
+
+            log("Video has been cued");
+
+            //Add these videos to our master playlist
+            videos = videos.concat(event.target.getPlaylist());
+
+            if (playlists.length === 0) {
+                player.loadVideoById(GetRandomVideo());
+            }
+            else {
+                CueNextPlaylist(event);
+            }
+        }
+        else 
+        {
+            log("Unhandled playback code detected: " + event.data);
+            log("Attempting to just play another video");
+        }
+    }
+
+    function CueNextPlaylist(event) {
+        var playlistId = playlists.pop();
+        if (playlistId.startsWith("http") || playlistId.startsWith("www") || playlistId.startsWith("youtube")) {
+            playlistId = getParameterByName("list", playlistId);
+        }
+
+        event.target.cuePlaylist({
+            listType: 'playlist',
+            list: playlistId,
+        });
+    }
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+        
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        
+        if (!results) return null;
+        if (!results[2]) return '';
+        
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    function log(input) {
+        if (Debugging) {
+            console.log(input);
+
+            var linebreak = document.createElement("br");
+            var consoleWindow = document.getElementById("ConsoleLog");
+            
+            if (typeof input === 'object' && input !== null)
+            {
+                input = "Data packet logged, check dev console for more info";                
+            }
+            consoleWindow.prepend(linebreak);
+            consoleWindow.prepend(input);            
+
+            consoleWindow.style = "";
+        }
+    }
+</script>

@@ -1,0 +1,33 @@
+<head>
+    <script></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;500&display=swap" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet">
+</head>
+
+<div id="ConsoleLog" style="display: none;"></div>
+
+<div class="triviaContainer">
+    <div class="triviaHeader">Joe's Trivia Mini-Game</div>
+    <div class="triviaSubHeader">Use the chat command to place an answer and double your points - eg. <strong>!answer B 2500</strong></div>
+    <p class="triviaQuestion">This is a Question</p>
+    <div class="triviaAnswers">
+        <li>Answer 1</li>
+        <li>Answer 2</li>
+        <li>Answer 3</li>
+        <li>Answer 4</li>
+    </div>
+    <p class="triviaTimer">Answer in <span>000</span> seconds</p>
+</div>
+
+<div class="playerContainer">
+    <p class="CurrentlyPlaying">Currently Playing</p><br />
+    <div id="videoTitle"></div><div class="CurrentlyPlaying">By</div><div id="videoOwner"></div>
+</div>
+
+<div id="player" style="display: none;"></div>
+<iframe id="jsonData" style="display: none;" src="data.json"></iframe>
+<script src="https://www.youtube.com/player_api"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script id="TriviaQuestionLogic" type="text/javascript" src="./trivia.js"></script>
+<script id="YouTubePlayerLogic" type="text/javascript" src="./youtube_player.js"></script>
