@@ -1,5 +1,5 @@
 var Debugging = false;
-var enablePlayer = false;
+var enablePlayer = true;
 
 var playlists = [
     //You can add a whole playlist here
