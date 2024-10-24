@@ -65,8 +65,8 @@ function RenderQuestion(response) {
             revealAnswer(correctAnswerSlot);
 
         } else if (questionObject.type === "boolean") {
-            $answersContainer.append("<div class='triviaAnswer triviaAnswer1'>True</div>");
-            $answersContainer.append("<div class='triviaAnswer triviaAnswer0'>False</div>");
+            $answersContainer.append("<div class='triviaAnswer triviaAnswer0'>True</div>");
+            $answersContainer.append("<div class='triviaAnswer triviaAnswer1'>False</div>");
 
             var answerIsTrue = (questionObject.correct_answer === "True");
 
@@ -87,10 +87,10 @@ function RenderQuestion(response) {
 
             if (answerIsTrue) {
                 log("Correct answer is True");
-                revealAnswer(1);
+                revealAnswer(0);
             } else {
                 log("Correct answer is False");
-                revealAnswer(0);
+                revealAnswer(1);
             }
         }
         else {
