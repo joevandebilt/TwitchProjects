@@ -1,6 +1,6 @@
 var enableTrivia = true;
 
-var questionTimeLimit = 35;
+var questionTimeLimit = 60;
 var intervalTimeLimit = 10;
 
 var currentQuestion = {};

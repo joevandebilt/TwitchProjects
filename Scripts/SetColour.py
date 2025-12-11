@@ -26,7 +26,7 @@ async def main():
 	else:
 		#Try and validate text colour
 		colour_map = { 
-			'COOLWHITE': (0, 100, 50),
+			'COOLWHITE': (1, 1, 100),
 			'DAYLIGHT': (0, 100, 75),
 			'IVORY': (0, 100, 100),
 			'WARMWHITE': (0, 100, 25),
@@ -126,7 +126,7 @@ def rgb2hsv(r, g, b):
 
 	# if max_rgb==r then h is computed as follows
 	elif max_rgb == r:
-		(60 * ((g - b) / difference) + 360) % 360
+		h = (60 * ((g - b) / difference) + 360) % 360
 
 	# if max_rgb==g then compute h as follows
 	elif max_rgb == g:

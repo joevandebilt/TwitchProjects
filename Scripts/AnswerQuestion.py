@@ -29,7 +29,7 @@ def run():
     if points < 10 or points > 10000:
         return f"@{username} you must bet between 10 and 10,000 points"
 
-    filename = r"D:/Projects/Twitch/Html/Quiz/data.json"
+    filename = r"C:/inetpub/TwitchApi/Quiz/data.json"
 
     new_entry = {
         "Username": username,
